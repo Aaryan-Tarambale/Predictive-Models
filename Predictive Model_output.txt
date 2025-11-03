@@ -1,0 +1,166 @@
+Model run by aaryan using Apollo 0.3.6 on R 4.5.1 for Darwin.
+Please acknowledge the use of Apollo by citing Hess & Palma (2019)
+  DOI 10.1016/j.jocm.2019.100170
+  www.ApolloChoiceModelling.com
+
+Model name                                  : Predictive Model
+Model description                           : asc for rail, generic coeff for TC
+Model run at                                : 2025-11-03 15:31:16.280172
+Estimation method                           : bgw
+Estimation diagnosis                        : Relative function convergence
+Optimisation diagnosis                      : Maximum found
+     hessian properties                     : Negative definite
+     maximum eigenvalue                     : -95.482325
+     reciprocal of condition number         : 3.30987e-06
+Number of individuals                       : 342
+Number of rows in database                  : 4349
+Number of modelled outcomes                 : 4349
+
+Number of cores used                        :  1 
+Model without mixing
+
+LL(start)                                   : -3014.5
+LL at equal shares, LL(0)                   : -3014.5
+LL at observed shares, LL(C)                : -2961.27
+LL(final)                                   : -2680.96
+Rho-squared vs equal shares                  :  0.1106 
+Adj.Rho-squared vs equal shares              :  0.1097 
+Rho-squared vs observed shares               :  0.0947 
+Adj.Rho-squared vs observed shares           :  0.094 
+AIC                                         :  5367.91 
+BIC                                         :  5387.04 
+
+Estimated parameters                        : 3
+Time taken (hh:mm:ss)                       :  00:00:0.16 
+     pre-estimation                         :  00:00:0.08 
+     estimation                             :  00:00:0.04 
+     post-estimation                        :  00:00:0.04 
+Iterations                                  :  6  
+
+Unconstrained optimisation.
+
+Estimates:
+            Estimate        s.e.   t.rat.(0)    Rob.s.e. Rob.t.rat.(0)
+asc_rail   -0.236885    0.102337      -2.315    0.103570        -2.287
+b_cost     -0.050492    0.002325     -21.715    0.002428       -20.793
+b_tt       -0.007776  6.4296e-04     -12.093  6.3187e-04       -12.306
+
+
+Overview of choices for MNL model component :
+                                     car    rail
+Times available                  4349.00 4349.00
+Times chosen                     1835.00 2514.00
+Percentage chosen overall          42.19   57.81
+Percentage chosen when available   42.19   57.81
+
+
+
+Classical covariance matrix:
+            asc_rail      b_cost        b_tt
+asc_rail     0.01047   2.344e-05   5.878e-05
+b_cost     2.344e-05   5.407e-06   6.414e-07
+b_tt       5.878e-05   6.414e-07   4.134e-07
+
+Robust covariance matrix:
+            asc_rail      b_cost        b_tt
+asc_rail     0.01073   4.686e-05   5.856e-05
+b_cost     4.686e-05   5.897e-06   5.875e-07
+b_tt       5.856e-05   5.875e-07   3.993e-07
+
+Classical correlation matrix:
+            asc_rail      b_cost        b_tt
+asc_rail     1.00000     0.09852      0.8933
+b_cost       0.09852     1.00000      0.4290
+b_tt         0.89329     0.42899      1.0000
+
+Robust correlation matrix:
+            asc_rail      b_cost        b_tt
+asc_rail      1.0000      0.1863      0.8948
+b_cost        0.1863      1.0000      0.3829
+b_tt          0.8948      0.3829      1.0000
+
+ 20 most extreme outliers in terms of lowest average per choice prediction:
+  ID Avg prob per choice
+  84           0.4098918
+ 204           0.4152015
+  80           0.4216115
+ 434           0.4280332
+ 182           0.4294380
+ 307           0.4335346
+ 441           0.4348377
+  18           0.4350150
+ 309           0.4408492
+ 338           0.4471675
+ 337           0.4520868
+  39           0.4530870
+ 257           0.4541433
+ 322           0.4548229
+  94           0.4548498
+ 282           0.4564087
+ 392           0.4596264
+ 339           0.4596707
+ 400           0.4608882
+ 459           0.4610387
+
+Settings and functions used in model definition:
+
+apollo_control
+--------------
+                       Value                                                               
+modelName              "Predictive Model"                                                  
+modelDescr             "asc for rail, generic coeff for TC"                                
+indivID                "ID"                                                                
+debug                  "FALSE"                                                             
+nCores                 "1"                                                                 
+workInLogs             "FALSE"                                                             
+seed                   "13"                                                                
+mixing                 "FALSE"                                                             
+HB                     "FALSE"                                                             
+noValidation           "FALSE"                                                             
+noDiagnostics          "FALSE"                                                             
+calculateLLC           "TRUE"                                                              
+analyticHessian        "FALSE"                                                             
+memorySaver            "FALSE"                                                             
+outputDirectory        "/Users/aaryan/Desktop/Predictive Modeling/R-2/Predictive Tutorial/"
+panelData              "TRUE"                                                              
+analyticGrad           "TRUE"                                                              
+analyticGrad_manualSet "FALSE"                                                             
+overridePanel          "FALSE"                                                             
+preventOverridePanel   "FALSE"                                                             
+noModification         "FALSE"                                                             
+
+Hessian routines attempted
+--------------------------
+numerical jacobian of LL analytical gradient
+
+Scaling used in computing Hessian
+---------------------------------
+               Value
+asc_rail 0.236884962
+b_cost   0.050492491
+b_tt     0.007775678
+
+
+apollo_probabilities
+----------------------
+function(apollo_beta, apollo_inputs, functionality = 'estimate'){
+  apollo_attach(apollo_beta, apollo_inputs)
+  on.exit(apollo_detach(apollo_beta, apollo_inputs))
+  
+  P = list()
+  
+  V = list()
+  V[['car']] =            b_cost*cost_car  + b_tt*time_car
+  V[['rail']]= asc_rail + b_cost*cost_rail + b_tt*time_rail
+  
+  mnl_settings = list(
+    alternatives = c(car = 1, rail = 2),
+    avail        =list(car=av_car, rail=av_rail),
+    choiceVar    =choice,
+    V            =V)
+  
+  P[['model']] = apollo_mnl(mnl_settings, functionality)
+  P = apollo_panelProd(P, apollo_inputs, functionality)
+  P = apollo_prepareProb(P, apollo_inputs, functionality)
+  return(P)
+}
