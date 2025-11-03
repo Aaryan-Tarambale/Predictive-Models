@@ -1,2 +1,2 @@
 # Predictive-Modeling
-Following are my projects done in predictive analysis done in RStudio. The projects are related to Binary Logit, Multinomial Logit and Forecasting
+Following is a predictive analytics project done in RStudio. The projects are related to Binary Logit. 
